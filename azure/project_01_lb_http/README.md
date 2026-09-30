@@ -12,6 +12,12 @@ An educational Terraform project that provisions a small HTTP web environment on
 - Separate the virtual machines into two subnets and provide outbound connectivity through a NAT Gateway.
 - Practice Terraform resource references, variables, locals, outputs, provider configuration, a registry module, and cloud-init.
 
+## 📐 Architecture / Topology
+
+Below is a diagram of the architecture deployed in this project:
+
+![Project 1 Architecture](./images/topology.png)
+
 ## Architecture
 
 The deployment is created in the `canadaeast` region and contains:
