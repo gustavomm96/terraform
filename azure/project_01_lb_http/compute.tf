@@ -50,8 +50,8 @@ resource "azurerm_virtual_machine" "vm-nginx-01" {
 
   os_profile {
     computer_name  = "vm-nginx-01"
-    admin_username = "adminuser"
-    admin_password = "coloque sua senha"
+    admin_username = var.admin_user
+    admin_password = var.admin_password
     custom_data    = file("${path.module}/cloud-init.yaml")
   }
 

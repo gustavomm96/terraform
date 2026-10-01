@@ -1,6 +1,13 @@
 # Local .terraform directories
 **/.terraform/*
 
+# Local state lock file
+*.tfstate.lock.info
+
+# Saved plans, which can contain sensitive values
+tfplan
+*.plan
+
 # .tfstate files
 *.tfstate
 *.tfstate.*

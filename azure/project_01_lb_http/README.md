@@ -18,6 +18,9 @@ Below is a diagram of the architecture deployed in this project:
 
 ![Project 1 Architecture](./images/topology.png)
 
+## Project Cost
+![Project 1 Cost Management](./images/lab-cost.png)
+
 ## Architecture
 
 The deployment is created in the `canadaeast` region and contains:
