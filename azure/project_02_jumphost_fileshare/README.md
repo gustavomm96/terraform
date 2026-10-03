@@ -4,8 +4,11 @@ A Terraform learning project that deploys an Azure Files share in Australia East
 
 > **Lab scope:** The goal is to practice Azure infrastructure and identity configuration with Terraform. The Windows share mapping was tested manually using the VM's system-assigned managed identity and RBAC. The Linux VM was intentionally left without Azure Files authentication by RBAC, but in both VMs in Australia, we tested the connection manually; you can see some tests in the images folder. The main goal was to create the infrastructure at Azure by terraform testing file share with a Windows and Linux OS and not create scripts in bash or Powershell
 
-
+## Infrastructure Topology
 ![Infrastructure Topology ](images/infra-topology.png)
+
+## Project Cost
+![Project 2 Cost Management](./images/project_cost.png)
 
 ## Architecture
 

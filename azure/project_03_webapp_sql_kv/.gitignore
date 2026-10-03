@@ -1,0 +1,25 @@
+# Terraform local data and state
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# Local variables and credentials
+terraform.tfvars
+*.auto.tfvars
+!*.tfvars.example
+
+# .NET build and publish output
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# Generated deployment archives
+**/gmapp-web.zip
+
+# Operating-system files
+Thumbs.db
+Desktop.ini
