@@ -40,6 +40,9 @@ Application Gateway selects the backend based on the incoming `Host` header:
 
 Both hostnames resolve to the same Application Gateway public IP. **The client connects to the gateway over HTTP on port 80.** From the gateway to both the App Service and Storage, the backend settings and health probes use HTTPS on port 443. Therefore, traffic between a browser and the gateway is not encrypted, even though the gateway uses HTTPS to its backends.
 
+## Project Cost
+![Project 3 Cost Management](./imagens/project03_cost.png)
+
 ### Resolving the hostnames locally on Windows
 
 This project does not configure public DNS for these hostnames. For local testing, the hostnames were mapped to the Application Gateway IP address in the Windows `hosts` file. Get the IP address created by Terraform:
