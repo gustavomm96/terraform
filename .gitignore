@@ -30,3 +30,7 @@ override.tf.json
 # Diagram editor temporary files
 *.bkp
 *.dtmp
+
+# keys
+*.key
+*.pub
