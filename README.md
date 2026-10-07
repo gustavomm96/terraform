@@ -33,6 +33,10 @@ The project organization is structured in a modular and scalable way, separating
 terraform/
 ├── azure/              # Projects focused on the Microsoft Azure ecosystem
 │   ├── project1/       # [Project load balance http/2 Nginx vm receiving http requests from lb]
-│   └── project2/       # [Future Azure projects]
-├── aws/                # (Future) Projects in the Amazon Web Services ecosystem
+│   ├── project2/       # [Project file share between linux and windows with bastion safe conection]
+|   └── project3/       # [Project WebApp connect with PAS MySQL and use Key Vault]
+├── aws/                # Projects focused on the Amazon Web Services ecosystem
+|   ├── project1/       # [Project Static website with s3 and CloudFront]
+|   ├── project2/       # [Project Auto Scaling App with RDS Database in private subnets and bastion]
+|   └── project3/       # [Future AWS projects]
 └── gcp/                # (Future) Projects in the Google Cloud Platform ecosystem
