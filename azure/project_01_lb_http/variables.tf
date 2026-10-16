@@ -5,12 +5,12 @@ variable "project_name" {
 }
 
 variable "admin_user" {
-  description = "Admin user to login at windows VM"
+  description = "Admin user to login at Linux VM"
   type        = string
 }
 
 variable "admin_password" {
-  description = "Admin passoword to login at windows VM"
+  description = "Admin passoword to login at Linux VM"
   type        = string
   sensitive   = true
 }
