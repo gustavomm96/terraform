@@ -1,0 +1,121 @@
+$ErrorActionPreference = "Stop"
+$ProgressPreference = "SilentlyContinue"
+
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+$username = "${username}"
+$secretUri = "https://secretmanager.googleapis.com/v1/${secret_version}:access"
+
+$maxAttempts = 30
+$configured = $false
+$stage = "initialization"
+
+for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+    try {
+        $stage = "metadata-token"
+        $tokenResponse = Invoke-RestMethod `
+            -Uri "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token" `
+            -Headers @{ "Metadata-Flavor" = "Google" } `
+            -Method Get `
+            -TimeoutSec 30
+        
+        $stage = "secret-access"
+        $secretResponse = Invoke-RestMethod `
+            -Uri $secretUri `
+            -Headers @{
+                Authorization = "Bearer $($tokenResponse.access_token)"
+            } `
+            -Method Get `
+            -TimeoutSec 30
+
+        $stage = "password-decode"
+        $passwordBytes = [Convert]::FromBase64String(
+            $secretResponse.payload.data
+        )
+
+        $plainPassword = [Text.Encoding]::UTF8.GetString($passwordBytes)
+
+        $securePassword = ConvertTo-SecureString `
+            -String $plainPassword `
+            -AsPlainText `
+            -Force
+
+        $stage = "local-user-configuration"
+        $existingUser = Get-LocalUser `
+            -Name $username `
+            -ErrorAction SilentlyContinue
+            
+        # Description não pode ser maior que 48 caracteres deu erro para mim por causa disso, arrumado
+        if ($null -eq $existingUser) {
+            New-LocalUser `
+                -Name $username `
+                -Password $securePassword `
+                -Description "Terraform lab administrator" ` 
+                -PasswordNeverExpires `
+                -AccountNeverExpires | Out-Null
+        }
+        else {
+            Set-LocalUser `
+                -Name $username `
+                -Password $securePassword `
+                -PasswordNeverExpires $true
+
+            Enable-LocalUser -Name $username
+        }
+
+        $localUser = Get-LocalUser -Name $username
+
+        $stage = "administrators-membership"
+        $administrators = Get-LocalGroup -SID "S-1-5-32-544"
+
+        $membership = Get-LocalGroupMember -Group $administrators.Name |
+            Where-Object { $_.SID.Value -eq $localUser.SID.Value }
+
+        if ($null -eq $membership) {
+            Add-LocalGroupMember `
+                -Group $administrators.Name `
+                -Member $localUser
+        }
+
+        $configured = $true
+
+        Write-Output "Administrative account configuration completed."
+        break
+    }
+    catch {
+        $exceptionType = $_.Exception.GetType().FullName
+        $errorId = $_.FullyQualifiedErrorId
+        $lineNumber = $_.InvocationInfo.ScriptLineNumber
+
+        $httpStatus = "not-applicable"
+
+        if ($null -ne $_.Exception.Response) {
+            try {
+                $httpStatus = [int]$_.Exception.Response.StatusCode
+            }
+            catch {
+                $httpStatus = "unavailable"
+            }
+        }
+
+        Write-Warning (
+            "Bootstrap failed: attempt={0}; stage={1}; exception={2}; errorId={3}; line={4}; httpStatus={5}" -f `
+            $attempt, $stage, $exceptionType, $errorId, $lineNumber, $httpStatus
+        )
+
+        if ($attempt -lt $maxAttempts) {
+            Start-Sleep -Seconds 10
+        }
+    }
+    finally {
+        $plainPassword = $null
+        $passwordBytes = $null
+        $securePassword = $null
+        $secretResponse = $null
+        $tokenResponse = $null
+    }
+}
+
+if (-not $configured) {
+    throw "Administrative account bootstrap failed. Check Secret Manager access, network connectivity, and guest environment."
+}

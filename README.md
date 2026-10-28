@@ -21,7 +21,7 @@ The initial focus is concentrated on **Microsoft Azure**, with progressive expan
 | :--- | :---: | :--- |
 | **Microsoft Azure** | 🟢 In Progress | Provisioning basic to advanced resources (Resource Groups, Virtual Networks, Compute, etc.) |
 | **Amazon Web Services (AWS)** | 🟢 In Progress | Provisioning basic to advanced resources (EC2, ALB, CloudFront, RDS Databases, Networks, etc.) |
-| **Google Cloud Platform (GCP)** | 🔜 Coming Soon | *Planned for upcoming expansion stages.* |
+| **Google Cloud Platform (GCP)** | 🟢 In Progress | Provisioning basic to advanced resources (Compute Engine, MIGs, Cloud Storage, Cloud Run, Databases, Networks, etc.) |
 
 ---
 

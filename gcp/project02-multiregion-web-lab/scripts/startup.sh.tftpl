@@ -1,0 +1,76 @@
+#!/bin/bash
+set -euo pipefail
+
+exec > >(tee -a /var/log/web-startup.log) 2>&1
+
+echo "Starting bootstrap for ${service_name}"
+
+export DEBIAN_FRONTEND=noninteractive
+
+apt-get -o Acquire::Retries=5 update
+apt-get -o Acquire::Retries=5 install -y nginx curl
+
+INSTANCE_NAME="$(hostname)"
+
+INSTANCE_ZONE="$(curl --fail --silent --show-error \
+  --retry 5 \
+  --connect-timeout 5 \
+  --max-time 20 \
+  -H 'Metadata-Flavor: Google' \
+  http://metadata.google.internal/computeMetadata/v1/instance/zone)"
+
+INSTANCE_ZONE="$(basename "$INSTANCE_ZONE")"
+
+cat > /var/www/html/index.html <<EOF
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>${page_title}</title>
+</head>
+<body>
+  <h1>${page_title}</h1>
+  <p>Service: ${service_name}</p>
+  <p>Region: ${region}</p>
+  <p>Zone: $INSTANCE_ZONE</p>
+  <p>Instance: $INSTANCE_NAME</p>
+  <p>Provisioned with Terraform on Google Cloud.</p>
+</body>
+</html>
+EOF
+
+cat > /etc/nginx/sites-available/default <<'NGINX'
+server {
+    listen 80 default_server;
+    server_name _;
+
+    root /var/www/html;
+    index index.html;
+
+    location = /health {
+        default_type text/plain;
+        return 200 "healthy\n";
+    }
+
+    location = /${service_name} {
+        try_files /index.html =404;
+    }
+
+    location ^~ /${service_name}/ {
+        try_files /index.html =404;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+NGINX
+
+nginx -t
+systemctl enable nginx
+systemctl restart nginx
+
+curl --fail --silent --show-error http://127.0.0.1/health
+curl --fail --silent --show-error http://127.0.0.1/${service_name}
+
+echo "Bootstrap completed for ${service_name}"

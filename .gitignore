@@ -34,3 +34,5 @@ override.tf.json
 # keys
 *.key
 *.pub
+
+post.txt
