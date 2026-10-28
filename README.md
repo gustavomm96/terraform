@@ -38,5 +38,7 @@ terraform/
 ├── aws/                # Projects focused on the Amazon Web Services ecosystem
 |   ├── project1/       # [Project Static website with s3 and CloudFront]
 |   ├── project2/       # [Project Auto Scaling App with RDS Database in private subnets and bastion]
-|   └── project3/       # [Future AWS projects]
-└── gcp/                # (Future) Projects in the Google Cloud Platform ecosystem
+|   └── project3/       # [Project API with lambda and dynamoDB - testing post and get]
+└── gcp/                # Projects focused on Google Cloud Platform ecosystem
+│   ├── project1/       # [FastAPI service on Cloud Run and storing files in a private Cloud Storage bucket]
+│   └── project2/       # [Multi-region web lab on Google Cloud with managed instance groups]
